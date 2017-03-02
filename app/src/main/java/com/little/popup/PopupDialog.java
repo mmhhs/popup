@@ -49,12 +49,103 @@ public class PopupDialog {
     private String cancelStr = "";//提示对话框取消按钮名称
     private String otherStr = "";//提示对话框其他按钮名称
 
-    private IOnItemListener iOnItemClickListener;//列表对话框监听
-    private IOnDialogListener iOnDialogListener;//提示对话框监听
-    private IOnDismissListener iOnDismissListener;//对话框消失监听
+    private IOnItemListener onItemListener;//列表对话框监听
+    private IOnDialogListener onDialogListener;//提示对话框监听
+    private IOnDismissListener onDismissListener;//对话框消失监听
 
     public PopupDialog(Context context) {
         this.context = context;
+    }
+
+    public static class Builder{
+
+        //Required
+        private Context context;
+        public Builder(Context context){
+            this.context = context;
+        }
+
+        //Option
+        private Activity activity;
+        private int alphaType = 1;//弹框半透明两种实现，0采用设置界面透明度，1采用半透明背景色
+        private boolean dismissOutside = false;//点击界面关闭
+        private boolean dismissBackKey = false;//点击返回键关闭
+        private int optionCount = 2;//提示对话框操作数量 优先级：确定>取消>其他
+        private String confirmStr = "确定";//提示对话框确定按钮名称
+        private String cancelStr = "取消";//提示对话框取消按钮名称
+        private String otherStr = "忽略";//提示对话框其他按钮名称
+        private IOnItemListener onItemListener;//列表对话框监听
+        private IOnDialogListener onDialogListener;//提示对话框监听
+        private IOnDismissListener onDismissListener;//对话框消失监听
+
+        public Builder setAlphaType(int alphaType,Activity activity){
+            this.alphaType = alphaType;
+            this.activity = activity;
+            return this;
+        }
+
+        public Builder dismissOutside(boolean dismissOutside){
+            this.dismissOutside = dismissOutside;
+            return this;
+        }
+
+        public Builder dismissBackKey(boolean dismissBackKey){
+            this.dismissBackKey = dismissBackKey;
+            return this;
+        }
+
+        public Builder confirmStr(String confirmStr){
+            this.confirmStr = confirmStr;
+            return this;
+        }
+
+        public Builder cancelStr(String cancelStr){
+            this.cancelStr = cancelStr;
+            return this;
+        }
+
+        public Builder otherStr(String otherStr){
+            this.otherStr = otherStr;
+            return this;
+        }
+
+        public Builder optionCount(int optionCount){
+            this.optionCount = optionCount;
+            return this;
+        }
+
+        public Builder onItemListener(IOnItemListener onItemListener){
+            this.onItemListener = onItemListener;
+            return this;
+        }
+
+        public Builder onDialogListener(IOnDialogListener onDialogListener){
+            this.onDialogListener = onDialogListener;
+            return this;
+        }
+
+        public Builder onDismissListener(IOnDismissListener onDismissListener){
+            this.onDismissListener = onDismissListener;
+            return this;
+        }
+
+        public PopupDialog build(){
+            return new PopupDialog(this);
+        }
+    }
+
+    public PopupDialog(Builder builder){
+        this.alphaType = builder.alphaType;
+        this.activity = builder.activity;
+        this.dismissOutside = builder.dismissOutside;
+        this.dismissBackKey = builder.dismissBackKey;
+        this.confirmStr = builder.confirmStr;
+        this.cancelStr = builder.cancelStr;
+        this.otherStr = builder.otherStr;
+        this.optionCount = builder.optionCount;
+        this.onItemListener = builder.onItemListener;
+        this.onDialogListener = builder.onDialogListener;
+        this.onDismissListener = builder.onDismissListener;
     }
 
     /**
@@ -119,8 +210,8 @@ public class PopupDialog {
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3) {
-                if (iOnItemClickListener!=null){
-                    iOnItemClickListener.onItem(arg2);
+                if (onItemListener !=null){
+                    onItemListener.onItem(arg2);
                 }
                 popupWindow.dismiss();
             }
@@ -140,8 +231,8 @@ public class PopupDialog {
             @Override
             public void onDismiss() {
                 hideAlpha();
-                if (iOnDismissListener!=null){
-                    iOnDismissListener.onDismiss();
+                if (onDismissListener !=null){
+                    onDismissListener.onDismiss();
                 }
             }
         });
@@ -221,8 +312,8 @@ public class PopupDialog {
 
             @Override
             public void onClick(View v) {
-                if (iOnDialogListener!=null){
-                    iOnDialogListener.onConfirm();
+                if (onDialogListener !=null){
+                    onDialogListener.onConfirm();
                 }
                 popupWindow.dismiss();
             }
@@ -232,8 +323,8 @@ public class PopupDialog {
 
             @Override
             public void onClick(View v) {
-                if (iOnDialogListener!=null){
-                    iOnDialogListener.onCancel();
+                if (onDialogListener !=null){
+                    onDialogListener.onCancel();
                 }
                 popupWindow.dismiss();
             }
@@ -243,8 +334,8 @@ public class PopupDialog {
 
             @Override
             public void onClick(View v) {
-                if (iOnDialogListener!=null){
-                    iOnDialogListener.onOther();
+                if (onDialogListener !=null){
+                    onDialogListener.onOther();
                 }
                 popupWindow.dismiss();
             }
@@ -264,8 +355,8 @@ public class PopupDialog {
             @Override
             public void onDismiss() {
                 hideAlpha();
-                if (iOnDismissListener!=null){
-                    iOnDismissListener.onDismiss();
+                if (onDismissListener !=null){
+                    onDismissListener.onDismiss();
                 }
             }
         });
@@ -353,27 +444,27 @@ public class PopupDialog {
         this.otherStr = otherStr;
     }
 
-    public IOnItemListener getiOnItemClickListener() {
-        return iOnItemClickListener;
+    public IOnItemListener getOnItemListener() {
+        return onItemListener;
     }
 
-    public void setiOnItemClickListener(IOnItemListener iOnItemClickListener) {
-        this.iOnItemClickListener = iOnItemClickListener;
+    public void setOnItemListener(IOnItemListener onItemListener) {
+        this.onItemListener = onItemListener;
     }
 
-    public IOnDialogListener getiOnDialogListener() {
-        return iOnDialogListener;
+    public IOnDialogListener getOnDialogListener() {
+        return onDialogListener;
     }
 
-    public void setiOnDialogListener(IOnDialogListener iOnDialogListener) {
-        this.iOnDialogListener = iOnDialogListener;
+    public void setOnDialogListener(IOnDialogListener onDialogListener) {
+        this.onDialogListener = onDialogListener;
     }
 
-    public IOnDismissListener getiOnDismissListener() {
-        return iOnDismissListener;
+    public IOnDismissListener getOnDismissListener() {
+        return onDismissListener;
     }
 
-    public void setiOnDismissListener(IOnDismissListener iOnDismissListener) {
-        this.iOnDismissListener = iOnDismissListener;
+    public void setOnDismissListener(IOnDismissListener onDismissListener) {
+        this.onDismissListener = onDismissListener;
     }
 }
