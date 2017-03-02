@@ -135,6 +135,7 @@ public class PopupDialog {
     }
 
     public PopupDialog(Builder builder){
+        this.context = builder.context;
         this.alphaType = builder.alphaType;
         this.activity = builder.activity;
         this.dismissOutside = builder.dismissOutside;
